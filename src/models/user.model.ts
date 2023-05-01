@@ -1,11 +1,31 @@
-const mongoose = require('mongoose');
+import mongoose, { Model, Schema, model } from 'mongoose';
+
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const { toJSON, paginate } = require('./plugins');
 const { roles } = require('../config/roles');
 const authTypes = require('../config/authTypes');
 
-const userSchema = mongoose.Schema(
+interface IUser {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  authType: string;
+  role: string;
+  isEmailVerified: boolean;
+}
+
+interface IUserMethods {
+  isPasswordMatch(password: string): Promise<boolean>;
+}
+
+interface IUserModel extends Model<IUser, IUserMethods> {
+  searchableFields(): string[];
+  isEmailTaken(email: string, excludeUserId: mongoose.Types.ObjectId): Promise<boolean>;
+}
+
+const userSchema = new Schema<IUser, IUserModel, IUserMethods>(
   {
     firstName: {
       type: String,
@@ -23,7 +43,7 @@ const userSchema = mongoose.Schema(
       unique: true,
       trim: true,
       lowercase: true,
-      validate(value) {
+      validate(value: string) {
         if (!validator.isEmail(value)) {
           throw new Error('Invalid email');
         }
@@ -34,7 +54,7 @@ const userSchema = mongoose.Schema(
       // required: true, TODO: do we need this?
       trim: true,
       minlength: 8,
-      validate(value) {
+      validate(value: string) {
         if (!value.match(/\d/) || !value.match(/[a-zA-Z]/)) {
           throw new Error('Password must contain at least one letter and one number');
         }
@@ -70,9 +90,10 @@ userSchema.plugin(paginate);
  * Return paths to text search in paginate plugin
  * @returns {Array<string>}
  */
-userSchema.statics.searchableFields = function () {
+
+userSchema.static('searchableFields', function searchableFields(): string[] {
   return ['firstName', 'lastName', 'email'];
-};
+});
 
 /**
  * Check if email is taken
@@ -80,32 +101,33 @@ userSchema.statics.searchableFields = function () {
  * @param {ObjectId} [excludeUserId] - The id of the user to be excluded
  * @returns {Promise<boolean>}
  */
-userSchema.statics.isEmailTaken = async function (email, excludeUserId) {
-  const user = await this.findOne({ email, _id: { $ne: excludeUserId } });
-  return !!user;
-};
+
+userSchema.static(
+  'isEmailTaken',
+  async function isEmailTaken(email: string, excludeUserId: mongoose.Types.ObjectId): Promise<boolean> {
+    const user = this.findOne({ email, _id: { $ne: excludeUserId } });
+    return !!user;
+  }
+);
 
 /**
  * Check if password matches the user's password
  * @param {string} password
  * @returns {Promise<boolean>}
  */
-userSchema.methods.isPasswordMatch = async function (password) {
-  const user = this;
+
+userSchema.method('isPasswordMatch', async function isPasswordMatch(password: string): Promise<boolean> {
+  const user = this as IUser;
   return bcrypt.compare(password, user.password);
-};
+});
 
 userSchema.pre('save', async function (next) {
-  const user = this;
-  if (user.isModified('password')) {
-    user.password = await bcrypt.hash(user.password, 8);
+  if (this.isModified('password')) {
+    this.password = await bcrypt.hash(this.password, 8);
   }
   next();
 });
 
-/**
- * @typedef User
- */
-const User = mongoose.model('User', userSchema);
+const User = model<IUser, IUserModel>('User', userSchema);
 
-module.exports = User;
+export default User;

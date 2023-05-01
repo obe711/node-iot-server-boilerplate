@@ -77,7 +77,7 @@
     "xss-clean": "^0.1.1"
   },
   "devDependencies": {
-    "@types/express": "4",
+    "@types/express": "^4.17.17",
     "@types/node": "^18.16.1",
     "@typescript-eslint/eslint-plugin": "^5.59.1",
     "@typescript-eslint/parser": "^5.59.1",

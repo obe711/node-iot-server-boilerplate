@@ -1,8 +1,17 @@
-const mongoose = require('mongoose');
+import mongoose, { Model, Schema } from 'mongoose';
+
 const { toJSON } = require('./plugins');
 const { tokenTypes } = require('../config/tokens');
 
-const tokenSchema = mongoose.Schema(
+interface IToken {
+  token: string;
+  user: mongoose.Schema.Types.ObjectId;
+  type: string;
+  expires: Date;
+  blacklisted?: boolean;
+}
+
+const tokenSchema = new Schema<IToken>(
   {
     token: {
       type: String,
@@ -10,7 +19,7 @@ const tokenSchema = mongoose.Schema(
       index: true,
     },
     user: {
-      type: mongoose.SchemaTypes.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: true,
     },
@@ -36,9 +45,6 @@ const tokenSchema = mongoose.Schema(
 // add plugin that converts mongoose to json
 tokenSchema.plugin(toJSON);
 
-/**
- * @typedef Token
- */
-const Token = mongoose.model('Token', tokenSchema);
+const Token: Model<IToken> = mongoose.model<IToken>('Token', tokenSchema);
 
-module.exports = Token;
+export default Token;
