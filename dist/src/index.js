@@ -10,7 +10,6 @@ mongoose.connect(config.mongoose.url, config.mongoose.options).then(() => {
     logger.info(`Listening to port ${config.port}`);
   });
 });
-
 const exitHandler = () => {
   if (server) {
     server.close(() => {
@@ -21,15 +20,12 @@ const exitHandler = () => {
     process.exit(1);
   }
 };
-
 const unexpectedErrorHandler = (error) => {
   logger.error(error);
   exitHandler();
 };
-
 process.on('uncaughtException', unexpectedErrorHandler);
 process.on('unhandledRejection', unexpectedErrorHandler);
-
 process.on('SIGTERM', () => {
   logger.info('SIGTERM received');
   if (server) {
