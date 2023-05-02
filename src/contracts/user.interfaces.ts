@@ -1,12 +1,15 @@
-interface ICreateUser {
+import mongoose from 'mongoose';
+
+export interface ICreateUser {
   firstName: string;
   lastName: string;
   email: string;
   password: string;
+  _id: mongoose.Types.ObjectId;
 };
 
 
-interface IUpdateUser {
+export interface IUpdateUser {
   firstName?: string;
   lastName?: string;
   email?: string;
@@ -15,8 +18,3 @@ interface IUpdateUser {
   role?: string;
   isEmailVerified?: boolean;
 }
-
-module.exports = {
-  ICreateUser,
-  IUpdateUser
-};

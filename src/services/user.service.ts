@@ -1,15 +1,15 @@
-const httpStatus = require('http-status');
-const { ICreateUser, IUpdateUser } = require('../contracts/user.interfaces.ts');
-const { User } = require('../models');
-const ApiError = require('../utils/ApiError');
+import httpStatus from 'http-status';
+import { ICreateUser, IUpdateUser } from '../contracts/user.interfaces';
+import { User } from '../models';
+import ApiError from '../utils/ApiError';
 
 /**
  * Create a user
  * @param {Object} userBody
  * @returns {Promise<User>}
  */
-const createUser = async (userBody: ICreateUser) => {
-  if (await User.isEmailTaken(userBody.email)) {
+const createUser = async (userBody: ICreateUser): Promise<any> => {
+  if (await User.isEmailTaken(userBody.email, userBody._id)) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
   }
   return User.create(userBody);
@@ -25,7 +25,7 @@ const createUser = async (userBody: ICreateUser) => {
  * @param {string} search - Text string to search in search fields
  * @returns {Promise<QueryResult>}
  */
-const queryUsers = async (filter, options, search) => {
+const queryUsers = async (filter: object, options: object, search: string) => {
   const users = await User.paginate(filter, options, search);
   return users;
 };
@@ -81,7 +81,8 @@ const deleteUserById = async (userId: string) => {
   return user;
 };
 
-module.exports = {
+// eslint-disable-next-line import/prefer-default-export
+export const userService = {
   createUser,
   queryUsers,
   getUserById,

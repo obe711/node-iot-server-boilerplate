@@ -1,10 +1,9 @@
 import mongoose, { Model, Schema, model } from 'mongoose';
-
-const validator = require('validator');
-const bcrypt = require('bcryptjs');
-const { toJSON, paginate } = require('./plugins');
-const { roles } = require('../config/roles');
-const authTypes = require('../config/authTypes');
+import validator from 'validator';
+import bcrypt from 'bcryptjs';
+import { toJSON, paginate } from './plugins';
+import { roles } from '../config/roles';
+import authTypes from '../config/authTypes';
 
 interface IUser {
   firstName: string;
@@ -14,6 +13,7 @@ interface IUser {
   authType: string;
   role: string;
   isEmailVerified: boolean;
+
 }
 
 interface IUserMethods {
@@ -23,6 +23,8 @@ interface IUserMethods {
 interface IUserModel extends Model<IUser, IUserMethods> {
   searchableFields(): string[];
   isEmailTaken(email: string, excludeUserId: mongoose.Types.ObjectId): Promise<boolean>;
+  toJSON: (arg0: Schema) => Promise<any>;
+  paginate: (filter: object, options: object, search?: string) => Promise<object>;
 }
 
 const userSchema = new Schema<IUser, IUserModel, IUserMethods>(

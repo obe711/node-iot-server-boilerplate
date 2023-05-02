@@ -1,7 +1,7 @@
-const Joi = require('joi');
-const { password, objectId } = require('./custom.validation');
+import Joi from 'joi';
+import { password, objectId } from './custom.validation';
 
-const createUser = {
+export const createUser = {
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required().custom(password),
@@ -11,7 +11,7 @@ const createUser = {
   }),
 };
 
-const getUsers = {
+export const getUsers = {
   query: Joi.object().keys({
     firstName: Joi.string(),
     lastName: Joi.string(),
@@ -23,13 +23,13 @@ const getUsers = {
   }),
 };
 
-const getUser = {
+export const getUser = {
   params: Joi.object().keys({
     userId: Joi.string().custom(objectId),
   }),
 };
 
-const updateUser = {
+export const updateUser = {
   params: Joi.object().keys({
     userId: Joi.required().custom(objectId),
   }),
@@ -43,16 +43,9 @@ const updateUser = {
     .min(1),
 };
 
-const deleteUser = {
+export const deleteUser = {
   params: Joi.object().keys({
     userId: Joi.string().custom(objectId),
   }),
 };
 
-module.exports = {
-  createUser,
-  getUsers,
-  getUser,
-  updateUser,
-  deleteUser,
-};

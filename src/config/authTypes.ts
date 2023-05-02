@@ -1,0 +1,1 @@
+export default ['email', 'google', 'facebook', 'apple'];

@@ -1,14 +1,14 @@
-const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt');
-const config = require('./config');
-const { tokenTypes } = require('./tokens');
-const { User } = require('../models');
+import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
+import config from './config';
+import { tokenTypes } from './tokens';
+import { User } from '../models';
 
 const jwtOptions = {
   secretOrKey: config.jwt.secret,
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
 };
 
-const jwtVerify = async (payload, done) => {
+const jwtVerify = async (payload: any, done: any) => {
   try {
     if (payload.type !== tokenTypes.ACCESS) {
       throw new Error('Invalid token type');
@@ -25,6 +25,5 @@ const jwtVerify = async (payload, done) => {
 
 const jwtStrategy = new JwtStrategy(jwtOptions, jwtVerify);
 
-module.exports = {
-  jwtStrategy,
-};
+// eslint-disable-next-line import/prefer-default-export
+export { jwtStrategy };
