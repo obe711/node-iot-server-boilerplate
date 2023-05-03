@@ -55,6 +55,43 @@ const refreshTokens = catchAsync(async (req: Request, res: Response) => {
   res.send({ user, tokens });
 });
 
+const forgotPassword = catchAsync(async (req: Request, res: Response) => {
+  const resetPasswordToken = await tokenService.generateResetPasswordToken(req.body.email);
+  await emailService.sendResetPasswordEmail(req.body.email, resetPasswordToken);
+  res.status(httpStatus.NO_CONTENT).send();
+});
+
+const resetPassword = catchAsync(async (req: Request, res: Response) => {
+  await authService.resetPassword(req.query.token, req.body.password);
+  res.status(httpStatus.NO_CONTENT).send();
+});
+
+const sendVerificationEmail = catchAsync(async (req: Request, res: Response) => {
+  const verifyEmailToken = await tokenService.generateVerifyEmailToken(req.user);
+  await emailService.sendVerificationEmail(req.user.email, verifyEmailToken);
+  res.status(httpStatus.NO_CONTENT).send();
+});
+
+const verifyEmail = catchAsync(async (req: Request, res: Response) => {
+  await authService.verifyEmail(req.query.token);
+  res.status(httpStatus.NO_CONTENT).send();
+});
+
+export const authController = {
+  register,
+  loginEmail,
+  loginApple,
+  loginGoogle,
+  logout,
+  refreshTokens,
+  forgotPassword,
+  resetPassword,
+  sendVerificationEmail,
+  verifyEmail,
+};
+
+
+
 
  
 
