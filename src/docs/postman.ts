@@ -1,8 +1,8 @@
-import { convert as openapiToPostmanv2 } from 'openapi-to-postmanv2';
+import Converter from 'openapi-to-postmanv2';
 import { Request, Response, NextFunction } from 'express';
 
-const middleware = (openapiData: Record<string, any>) => (req: Request, res: Response, next: NextFunction) => {
-  openapiToPostmanv2({ type: 'json', data: openapiData }, {}, (err: Error, conversionResult: Record<string, any>) => {
+export const apiConverter = (openapiData) => (req: Request, res: Response, next: NextFunction) => {
+  Converter.convert({ type: 'json', data: openapiData }, {}, (err, conversionResult) => {
     if (!conversionResult.result) {
       next(conversionResult.reason);
     } else {
@@ -11,5 +11,4 @@ const middleware = (openapiData: Record<string, any>) => (req: Request, res: Res
   });
 };
 
-export default middleware;
 
