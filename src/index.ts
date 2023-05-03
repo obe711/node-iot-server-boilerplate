@@ -1,9 +1,10 @@
-const mongoose = require('mongoose');
-const app = require('./app');
-const config = require('./config/config');
-const logger = require('./config/logger');
+import mongoose from 'mongoose';
+import app from './app';
+import config from './config/config';
+import logger from './config/logger';
 
 let server: { close: (arg0?: (() => never) | undefined) => void };
+
 mongoose.connect(config.mongoose.url, config.mongoose.options).then(() => {
   logger.info('Connected to MongoDB');
   server = app.listen(config.port, () => {
@@ -36,3 +37,4 @@ process.on('SIGTERM', () => {
     server.close();
   }
 });
+

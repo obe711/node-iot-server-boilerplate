@@ -3,10 +3,10 @@ import axios from 'axios';
 import NodeRSA from 'node-rsa';
 import jsonwebtoken from 'jsonwebtoken';
 import ApiError from '../utils/ApiError';
-import { userService } from '../services';
+import { userService } from './user.service';
 import logger from '../config/logger';
 import config from '../config/config';
-import { Algorithm } from 'jsonwebtoken';
+
 
 const _getApplePublicKeys = async () => {
   return axios
@@ -63,5 +63,5 @@ const verifyOAuthToken = async (token: string, firstName: string, lastName: stri
   }
 };
 
-export { verifyOAuthToken };
+export const appleService =  { verifyOAuthToken };
 

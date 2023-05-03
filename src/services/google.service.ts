@@ -1,9 +1,10 @@
-const httpStatus = require('http-status');
-const { OAuth2Client } = require('google-auth-library');
-const ApiError = require('../utils/ApiError');
-const userService = require('./user.service');
-const config = require('../config/config');
-const logger = require('../config/logger');
+import * as httpStatus from 'http-status';
+import { OAuth2Client } from 'google-auth-library';
+import ApiError from '../utils/ApiError';
+import {userService} from './user.service';
+import config from '../config/config';
+import logger from '../config/logger';
+
 // Google Oauth2
 const client = new OAuth2Client(config.oauth.google.client_id);
 
@@ -12,7 +13,7 @@ const client = new OAuth2Client(config.oauth.google.client_id);
  * @param {string} token
  * @returns {Promise<User>}
  */
-const verifyOAuthToken = async (token) => {
+const verifyOAuthToken = async (token: string): Promise<User> => {
   try {
     const ticket = await client.verifyIdToken({
       idToken: token,
@@ -41,6 +42,7 @@ const verifyOAuthToken = async (token) => {
   }
 };
 
-module.exports = {
+export const googleService = {
   verifyOAuthToken,
 };
+

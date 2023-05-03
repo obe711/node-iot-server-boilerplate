@@ -1,11 +1,17 @@
-const config = require('../config/config');
+import { Response } from 'express';
+import config from '../config/config';
+
+interface TokenData {
+  expires: string;
+  token: string;
+}
 
 /**
  * Set Token Cookie
  * @param {Response<object>} res
  * @param {object} tokenData
  */
-const setTokenCookie = (res, tokenData) => {
+const setTokenCookie = (res: Response<object>, tokenData: TokenData): void => {
   const { expires, token } = tokenData;
   const cookieRefreshOptions = {
     httpOnly: true,
@@ -18,7 +24,7 @@ const setTokenCookie = (res, tokenData) => {
  * Expire Token Cookie
  * @param {Response<object>} res
  */
-const expireTokenCookie = (res) => {
+const expireTokenCookie = (res: Response<object>): void => {
   const expireCookieOptions = {
     httpOnly: true,
     expires: new Date(Date.now() - 60 * 1000 * 60 * 24 * 31),
@@ -26,7 +32,8 @@ const expireTokenCookie = (res) => {
   res.cookie(config.jwt.refreshCookieName, 'x', expireCookieOptions);
 };
 
-module.exports = {
+export const cookieService = {
   setTokenCookie,
   expireTokenCookie,
 };
+
