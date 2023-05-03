@@ -1,9 +1,10 @@
-const httpStatus = require('http-status');
-const tokenService = require('./token.service');
-const userService = require('./user.service');
-const Token = require('../models/token.model');
-const ApiError = require('../utils/ApiError');
-const { tokenTypes } = require('../config/tokens');
+import httpStatus from 'http-status';
+import * as tokenService from './token.service';
+import {userService} from '.';
+import Token from '../models/token.model';
+import ApiError from '../utils/ApiError';
+import { tokenTypes } from '../config/tokens';
+import { User } from '../models';
 
 /**
  * Login with username and password
@@ -11,7 +12,7 @@ const { tokenTypes } = require('../config/tokens');
  * @param {string} password
  * @returns {Promise<User>}
  */
-const loginUserWithEmailAndPassword = async (email, password) => {
+export const loginUserWithEmailAndPassword = async (email: string, password: string): Promise<User> => {
   const user = await userService.getUserByEmail(email);
   if (user && user.authType !== 'email') {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password');
@@ -27,7 +28,7 @@ const loginUserWithEmailAndPassword = async (email, password) => {
  * @param {string} refreshToken
  * @returns {Promise}
  */
-const logout = async (refreshToken) => {
+export const logout = async (refreshToken: string): Promise<void> => {
   const refreshTokenDoc = await Token.findOne({ token: refreshToken, type: tokenTypes.REFRESH, blacklisted: false });
   if (!refreshTokenDoc) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Not found');
@@ -40,7 +41,7 @@ const logout = async (refreshToken) => {
  * @param {string} refreshToken
  * @returns {Promise<Object>}
  */
-const refreshAuth = async (refreshToken) => {
+export const refreshAuth = async (refreshToken: string): Promise<{ user: User; tokens: { access: string; refresh: string } }> => {
   try {
     const refreshTokenDoc = await tokenService.verifyToken(refreshToken, tokenTypes.REFRESH);
     const user = await userService.getUserById(refreshTokenDoc.user);
@@ -61,7 +62,7 @@ const refreshAuth = async (refreshToken) => {
  * @param {string} newPassword
  * @returns {Promise}
  */
-const resetPassword = async (resetPasswordToken, newPassword) => {
+export const resetPassword = async (resetPasswordToken: string, newPassword: string): Promise<void> => {
   try {
     const resetPasswordTokenDoc = await tokenService.verifyToken(resetPasswordToken, tokenTypes.RESET_PASSWORD);
     const user = await userService.getUserById(resetPasswordTokenDoc.user);
@@ -80,7 +81,7 @@ const resetPassword = async (resetPasswordToken, newPassword) => {
  * @param {string} verifyEmailToken
  * @returns {Promise}
  */
-const verifyEmail = async (verifyEmailToken) => {
+export const verifyEmail = async (verifyEmailToken: string): Promise<void> => {
   try {
     const verifyEmailTokenDoc = await tokenService.verifyToken(verifyEmailToken, tokenTypes.VERIFY_EMAIL);
     const user = await userService.getUserById(verifyEmailTokenDoc.user);
@@ -94,10 +95,11 @@ const verifyEmail = async (verifyEmailToken) => {
   }
 };
 
-module.exports = {
+export const authService = {
   loginUserWithEmailAndPassword,
   logout,
   refreshAuth,
   resetPassword,
   verifyEmail,
-};
+
+}

@@ -1,3 +1,2 @@
-import { authController } from "./auth.controller"
-import { userController } from "./user.controller"
-
+export { authController } from "./auth.controller"
+export { userController } from "./user.controller"

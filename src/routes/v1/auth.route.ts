@@ -1,25 +1,24 @@
-const express = require('express');
-const validate = require('../../middlewares/validate');
-const authValidation = require('../../validations/auth.validation');
-const authController = require('../../controllers/auth.controller');
-const auth = require('../../middlewares/auth');
+import express, { Router } from 'express';
+import validate from '../../middlewares/validate';
+import { register, oauthLogin, login, logout, refreshTokens, forgotPassword, resetPassword, verifyEmail } from '../../validations/auth.validation';
+import * as authController from '../../controllers/auth.controller';
+import auth from '../../middlewares/auth';
 
-const router = express.Router();
+const router: Router = express.Router();
 
-router.post('/register', validate(authValidation.register), authController.register);
-router.post('/login/google', validate(authValidation.oauthLogin), authController.loginGoogle);
-router.post('/login/apple', validate(authValidation.oauthLogin), authController.loginApple);
-
-// TODO: Change to /login/email
-router.post('/login/email', validate(authValidation.login), authController.loginEmail);
-router.post('/logout', validate(authValidation.logout), authController.logout);
-router.post('/refresh-tokens', validate(authValidation.refreshTokens), authController.refreshTokens);
-router.post('/forgot-password', validate(authValidation.forgotPassword), authController.forgotPassword);
-router.post('/reset-password', validate(authValidation.resetPassword), authController.resetPassword);
+router.post('/register', validate(register), authController.register);
+router.post('/login/google', validate(oauthLogin), authController.loginGoogle);
+router.post('/login/apple', validate(oauthLogin), authController.loginApple);
+router.post('/login/email', validate(login), authController.loginEmail);
+router.post('/logout', validate(logout), authController.logout);
+router.post('/refresh-tokens', validate(refreshTokens), authController.refreshTokens);
+router.post('/forgot-password', validate(forgotPassword), authController.forgotPassword);
+router.post('/reset-password', validate(resetPassword), authController.resetPassword);
 router.post('/send-verification-email', auth(), authController.sendVerificationEmail);
-router.post('/verify-email', validate(authValidation.verifyEmail), authController.verifyEmail);
+router.post('/verify-email', validate(verifyEmail), authController.verifyEmail);
 
-module.exports = router;
+export default router;
+
 
 /**
  * @swagger

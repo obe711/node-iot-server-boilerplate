@@ -1,12 +1,12 @@
-const express = require('express');
-const authRoute = require('./auth.route');
-const userRoute = require('./user.route');
-const docsRoute = require('./docs.route');
-const config = require('../../config/config');
+import express, { Router } from 'express';
+import authRoute from './auth.route';
+import userRoute from './user.route';
+import docsRoute from './docs.route';
+import config from '../../config/config';
 
-const router = express.Router();
+const router: Router = express.Router();
 
-const defaultRoutes = [
+const defaultRoutes: { path: string; route: Router }[] = [
   {
     path: '/auth',
     route: authRoute,
@@ -17,7 +17,7 @@ const defaultRoutes = [
   },
 ];
 
-const devRoutes = [
+const devRoutes: { path: string; route: Router }[] = [
   // routes available only in development mode
   {
     path: '/docs',
@@ -36,4 +36,5 @@ if (config.env === 'development') {
   });
 }
 
-module.exports = router;
+export default router;
+

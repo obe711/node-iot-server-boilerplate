@@ -1,11 +1,12 @@
-const httpStatus = require('http-status');
-const axios = require('axios');
-const NodeRSA = require('node-rsa');
-const jsonwebtoken = require('jsonwebtoken');
-const ApiError = require('../utils/ApiError');
-const userService = require('./user.service');
-const logger = require('../config/logger');
-const config = require('../config/config');
+import httpStatus from 'http-status';
+import axios from 'axios';
+import NodeRSA from 'node-rsa';
+import jsonwebtoken from 'jsonwebtoken';
+import ApiError from '../utils/ApiError';
+import { userService } from '../services';
+import logger from '../config/logger';
+import config from '../config/config';
+import { Algorithm } from 'jsonwebtoken';
 
 const _getApplePublicKeys = async () => {
   return axios
@@ -16,10 +17,10 @@ const _getApplePublicKeys = async () => {
     .then((response) => response.data.keys);
 };
 
-const getAppleUserId = async (token) => {
+const getAppleUserId = async (token:string) => {
   const keys = await _getApplePublicKeys();
   const decodedToken = jsonwebtoken.decode(token, { complete: true });
-  const { kid } = decodedToken.header;
+  const { kid  } = decodedToken.header;
   const key = keys.find((k) => k.kid === kid);
 
   const pubKey = new NodeRSA();
@@ -31,14 +32,14 @@ const getAppleUserId = async (token) => {
     'components-public'
   );
 
-  const userkey = pubKey.exportKey(['public']);
+  const userkey = pubKey.exportKey('public');
 
   return jsonwebtoken.verify(token, userkey, {
-    algorithms: 'RS256',
+    algorithms: ['RS256'],
   });
 };
 
-const verifyOAuthToken = async (token, firstName, lastName) => {
+const verifyOAuthToken = async (token: string, firstName: string, lastName: string) => {
   try {
     const user = await getAppleUserId(token);
     logger.info(JSON.stringify({ id: 'apple data', user }, null, 2));
@@ -62,6 +63,5 @@ const verifyOAuthToken = async (token, firstName, lastName) => {
   }
 };
 
-module.exports = {
-  verifyOAuthToken,
-};
+export { verifyOAuthToken };
+
