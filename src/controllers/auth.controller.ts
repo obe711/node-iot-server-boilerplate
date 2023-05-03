@@ -27,7 +27,6 @@ const loginEmail = catchAsync(async (req: Request, res: Response) => {
   res.send({ user, tokens });
 });
 
-// loginGoogle
 const loginGoogle = catchAsync(async (req: Request, res: Response) => {
   const user = await googleService.verifyOAuthToken(req.body.token);
   const tokens = await tokenService.generateAuthTokens(user);
@@ -35,10 +34,23 @@ const loginGoogle = catchAsync(async (req: Request, res: Response) => {
   res.send({ user, tokens });
 });
 
-// loginApple
 const loginApple = catchAsync(async (req: Request, res: Response) => {
   const user = await appleService.verifyOAuthToken(req.body.token);
   const tokens = await tokenService.generateAuthTokens(user);
+  cookieService.setTokenCookie(res, tokens.refresh);
+  res.send({ user, tokens });
+});
+
+const logout = catchAsync(async (req: Request, res: Response) => {
+  await authService.logout(req.body.refreshToken);
+  cookieService.expireTokenCookie(res);
+  res.status(httpStatus.NO_CONTENT).send();
+});
+
+const refreshTokens = catchAsync(async (req: Request, res: Response) => {
+  const { user, tokens } = await authService.refreshAuth(
+    req.cookies[config.jwt.refreshCookieName] || req.body.refreshToken
+  );
   cookieService.setTokenCookie(res, tokens.refresh);
   res.send({ user, tokens });
 });
