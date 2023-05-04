@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import httpStatus from 'http-status';
 import catchAsync from '../utils/catchAsync';
 import { config } from '../config/config';
+import { UserRequest } from '../contracts/user.interfaces';
 import {
   authService,
   userService,

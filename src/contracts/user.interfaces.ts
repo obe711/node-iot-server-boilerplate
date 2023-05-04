@@ -8,7 +8,8 @@ export interface ICreateUser {
   password?: string;
   authType: string;
   role: string;
-// _id?: mongoose.Types.ObjectId;
+  isEmailVerified?: boolean;
+_id: mongoose.Types.ObjectId;
 };
 
 

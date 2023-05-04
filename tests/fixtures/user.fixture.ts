@@ -1,13 +1,14 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-const faker = require('faker');
-const User = require('../../src/models/user.model');
+import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
+import faker from 'faker';
+import User from '../../src/models/user.model';
+import { ICreateUser } from '../../src/contracts/user.interfaces';
 
 const password = 'password1';
 const salt = bcrypt.genSaltSync(8);
 const hashedPassword = bcrypt.hashSync(password, salt);
 
-const userOne = {
+const userOne: ICreateUser = {
   _id: new mongoose.Types.ObjectId(),
   firstName: faker.name.firstName(),
   lastName: faker.name.lastName(),
@@ -18,7 +19,7 @@ const userOne = {
   authType: 'email',
 };
 
-const userTwo = {
+const userTwo: ICreateUser = {
   _id: new mongoose.Types.ObjectId(),
   firstName: faker.name.firstName(),
   lastName: faker.name.lastName(),
@@ -29,7 +30,7 @@ const userTwo = {
   authType: 'email',
 };
 
-const admin = {
+const admin: ICreateUser = {
   _id: new mongoose.Types.ObjectId(),
   firstName: faker.name.firstName(),
   lastName: faker.name.lastName(),
@@ -40,13 +41,14 @@ const admin = {
   authType: 'email',
 };
 
-const insertUsers = async (users) => {
+const insertUsers = async (users: ICreateUser[]) => {
   await User.insertMany(users.map((user) => ({ ...user, password: hashedPassword })));
 };
 
-module.exports = {
+export {
   userOne,
   userTwo,
   admin,
   insertUsers,
 };
+
