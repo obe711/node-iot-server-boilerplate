@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
 import catchAsync from '../utils/catchAsync';
-import config from '../config/config';
+import { config } from '../config/config';
 import {
   authService,
   userService,
@@ -23,6 +23,7 @@ const loginEmail = catchAsync(async (req: Request, res: Response) => {
   const { email, password } = req.body;
   const user = await authService.loginUserWithEmailAndPassword(email, password);
   const tokens = await tokenService.generateAuthTokens(user);
+  
   cookieService.setTokenCookie(res, tokens.refresh);
   res.send({ user, tokens });
 });
@@ -62,7 +63,7 @@ const forgotPassword = catchAsync(async (req: Request, res: Response) => {
 });
 
 const resetPassword = catchAsync(async (req: Request, res: Response) => {
-  await authService.resetPassword(req.query.token, req.body.password);
+  await authService.resetPassword(req.params.token, req.body.password);
   res.status(httpStatus.NO_CONTENT).send();
 });
 

@@ -5,7 +5,10 @@ import jsonwebtoken from 'jsonwebtoken';
 import ApiError from '../utils/ApiError';
 import { userService } from './user.service';
 import logger from '../config/logger';
-import config from '../config/config';
+import {config} from '../config/config';
+import { ICreateAppleUser } from '../contracts/apple.interfaces';
+
+
 
 
 const _getApplePublicKeys = async () => {
@@ -19,9 +22,16 @@ const _getApplePublicKeys = async () => {
 
 const getAppleUserId = async (token:string) => {
   const keys = await _getApplePublicKeys();
+  if (!keys || !Array.isArray(keys) || keys.length === 0) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Keys not found');
+  }
   const decodedToken = jsonwebtoken.decode(token, { complete: true });
+  if (!decodedToken) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Token not found');
+  } 
   const { kid  } = decodedToken.header;
   const key = keys.find((k) => k.kid === kid);
+
 
   const pubKey = new NodeRSA();
   pubKey.importKey(
@@ -39,10 +49,16 @@ const getAppleUserId = async (token:string) => {
   });
 };
 
-const verifyOAuthToken = async (token: string, firstName: string, lastName: string) => {
+const verifyOAuthToken = async (token: string, firstName?: string, lastName?: string) => {
+  firstName = firstName || '';
+  lastName = lastName || '';
   try {
-    const user = await getAppleUserId(token);
+    const user  = await getAppleUserId(token) as ICreateAppleUser
+
     logger.info(JSON.stringify({ id: 'apple data', user }, null, 2));
+
+  
+  
 
     const foundUser = await userService.getUserByEmail(user.email);
     if (!foundUser) {
@@ -52,7 +68,8 @@ const verifyOAuthToken = async (token: string, firstName: string, lastName: stri
         email: user.email,
         authType: 'apple',
         role: 'user',
-      });
+       
+      }) 
       return newUser;
     }
     if (config.oauth.strictMode && foundUser.authType !== 'apple') throw Error('Not apple user');

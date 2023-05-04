@@ -13,7 +13,7 @@ interface EnvVars {
   JWT_REFRESH_EXPIRATION_DAYS: number;
   JWT_RESET_PASSWORD_EXPIRATION_MINUTES: number;
   JWT_VERIFY_EMAIL_EXPIRATION_MINUTES: number;
-  JWT_REFRESH_COOKIE?: string;
+  JWT_REFRESH_COOKIE: string;
   SMTP_HOST?: string;
   SMTP_PORT?: number;
   SMTP_USERNAME?: string;
@@ -54,7 +54,7 @@ if (error) {
   throw new Error(`Config validation error: ${error.message}`);
 }
 
-export default {
+export const config = {
   env: envVars.NODE_ENV,
   port: envVars.PORT,
   mongoose: {

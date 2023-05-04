@@ -1,11 +1,13 @@
 import jwt from 'jsonwebtoken';
 import moment from 'moment';
 import httpStatus from 'http-status';
-import config from '../config/config';
+import {config} from '../config/config';
 import {userService} from '../services';
 import { Token } from '../models';
 import ApiError from '../utils/ApiError';
 import { tokenTypes } from '../config/tokens';
+import { IToken } from '../contracts/token.interfaces';
+import { ICreateUser } from '../contracts/user.interfaces';
 
 /**
  * Generate token
@@ -34,7 +36,7 @@ const generateToken = (userId: string, expires: moment.Moment, type: string, sec
  * @param {boolean} [blacklisted]
  * @returns {Promise<Token>}
  */
-const saveToken = async (token: string, userId: string, expires: moment.Moment, type: string, blacklisted = false): Promise<Token> => {
+const saveToken = async (token: string, userId: string, expires: moment.Moment, type: string, blacklisted = false): Promise<IToken> => {
   const tokenDoc = await Token.create({
     token,
     user: userId,
@@ -52,7 +54,7 @@ const saveToken = async (token: string, userId: string, expires: moment.Moment, 
  * @param {string} type
  * @returns {Promise<Token>}
  */
-const verifyToken = async (token: string, type: string): Promise<Token> => {
+const verifyToken = async (token: string, type: string): Promise<IToken> => {
   const payload = jwt.verify(token, config.jwt.secret) as { sub: string };
   const tokenDoc = await Token.findOne({ token, type, user: payload.sub, blacklisted: false });
   if (!tokenDoc) {
@@ -66,13 +68,13 @@ const verifyToken = async (token: string, type: string): Promise<Token> => {
  * @param {User} user
  * @returns {Promise<Object>}
  */
-const generateAuthTokens = async (user: { id: string }): Promise<{ access: { token: string, expires: Date }, refresh: { token: string, expires: Date } }> => {
+const generateAuthTokens = async (user: ICreateUser): Promise<{ access: { token: string, expires: Date }, refresh: { token: string, expires: Date } }> => {
   const accessTokenExpires = moment().add(config.jwt.accessExpirationMinutes, 'minutes');
-  const accessToken = generateToken(user.id, accessTokenExpires, tokenTypes.ACCESS);
+  const accessToken = generateToken(user._id.toString(), accessTokenExpires, tokenTypes.ACCESS);
 
   const refreshTokenExpires = moment().add(config.jwt.refreshExpirationDays, 'days');
-  const refreshToken = generateToken(user.id, refreshTokenExpires, tokenTypes.REFRESH);
-  await saveToken(refreshToken, user.id, refreshTokenExpires, tokenTypes.REFRESH);
+  const refreshToken = generateToken(user._id.toString(), refreshTokenExpires, tokenTypes.REFRESH);
+  await saveToken(refreshToken, user._id.toString(), refreshTokenExpires, tokenTypes.REFRESH);
 
   return {
     access: {

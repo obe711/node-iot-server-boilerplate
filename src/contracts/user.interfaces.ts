@@ -5,8 +5,10 @@ export interface ICreateUser {
   firstName: string;
   lastName: string;
   email: string;
-  password: string;
-  _id: mongoose.Types.ObjectId;
+  password?: string;
+  authType: string;
+  role: string;
+// _id?: mongoose.Types.ObjectId;
 };
 
 

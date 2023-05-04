@@ -1,15 +1,16 @@
 import mongoose, { Model, Schema } from 'mongoose';
+import { IToken } from '../contracts/token.interfaces';
 
 const { toJSON } = require('./plugins');
 const { tokenTypes } = require('../config/tokens');
 
-interface IToken {
-  token: string;
-  user: mongoose.Schema.Types.ObjectId;
-  type: string;
-  expires: Date;
-  blacklisted?: boolean;
-}
+// interface IToken {
+//   token: string;
+//   user: mongoose.Schema.Types.ObjectId;
+//   type: string;
+//   expires: Date;
+//   blacklisted?: boolean;
+// }
 
 const tokenSchema = new Schema<IToken>(
   {

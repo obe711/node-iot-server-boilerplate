@@ -1,9 +1,9 @@
 import { Response } from 'express';
-import config from '../config/config';
+import { config } from '../config/config';
 
 interface TokenData {
-  expires: string;
-  token: string;
+    expires: Date;
+    token: string;
 }
 
 /**
@@ -17,7 +17,7 @@ const setTokenCookie = (res: Response<object>, tokenData: TokenData): void => {
     httpOnly: true,
     expires: new Date(expires),
   };
-  res.cookie(config.jwt.refreshCookieName, token, cookieRefreshOptions);
+  res.cookie(config.jwt.refreshCookieName as string, token, cookieRefreshOptions);
 };
 
 /**
@@ -29,7 +29,7 @@ const expireTokenCookie = (res: Response<object>): void => {
     httpOnly: true,
     expires: new Date(Date.now() - 60 * 1000 * 60 * 24 * 31),
   };
-  res.cookie(config.jwt.refreshCookieName, 'x', expireCookieOptions);
+  res.cookie(config.jwt.refreshCookieName as string, 'x', expireCookieOptions);
 };
 
 export const cookieService = {

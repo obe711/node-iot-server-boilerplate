@@ -9,7 +9,7 @@ import ApiError from '../utils/ApiError';
  * @returns {Promise<User>}
  */
 const createUser = async (userBody: ICreateUser): Promise<any> => {
-  if (await User.isEmailTaken(userBody.email, userBody._id)) {
+  if (await User.isEmailTaken(userBody.email, userBody._id.toString())) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
   }
   return User.create(userBody);

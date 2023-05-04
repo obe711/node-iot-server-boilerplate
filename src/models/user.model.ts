@@ -1,4 +1,4 @@
-import mongoose, { Model, Schema, model } from 'mongoose';
+import mongoose, { Model, Schema, model, Document } from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
 import { toJSON, paginate } from './plugins';
@@ -16,18 +16,29 @@ interface IUser {
 
 }
 
-interface IUserMethods {
+// interface IUserMethods {
+//   isPasswordMatch(password: string): Promise<boolean>;
+// }
+
+interface IUserDocument extends IUser, Document {
   isPasswordMatch(password: string): Promise<boolean>;
 }
 
-interface IUserModel extends Model<IUser, IUserMethods> {
+// interface IUserModel extends Model<IUser, {}, IUserMethods> {
+//   searchableFields(): string[];
+//   isEmailTaken(email: string, excludeUserId: mongoose.Types.ObjectId): Promise<boolean>;
+//   toJSON: (arg0: Schema) => Promise<any>;
+//   paginate: (filter: object, options: object, search?: string) => Promise<object>;
+// }
+
+interface IUserModel extends Model<IUserDocument> {
   searchableFields(): string[];
   isEmailTaken(email: string, excludeUserId: mongoose.Types.ObjectId): Promise<boolean>;
   toJSON: (arg0: Schema) => Promise<any>;
   paginate: (filter: object, options: object, search?: string) => Promise<object>;
 }
 
-const userSchema = new Schema<IUser, IUserModel, IUserMethods>(
+const userSchema: Schema<IUserDocument> = new Schema(
   {
     firstName: {
       type: String,
@@ -130,6 +141,9 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-const User = model<IUser, IUserModel>('User', userSchema);
+const User = model<IUserDocument, IUserModel>('User', userSchema);
 
 export default User;
+
+
+

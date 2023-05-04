@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import config from '../config/config';
+import {config} from '../config/config';
 import logger from '../config/logger';
 
 const transport = nodemailer.createTransport(config.email.smtp);
@@ -17,7 +17,7 @@ if (config.env !== 'test') {
 }
 
 interface EmailMessage {
-  from: string;
+  from?: string;
   to: string;
   subject: string;
   text: string;
