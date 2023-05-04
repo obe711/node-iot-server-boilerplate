@@ -1,8 +1,20 @@
-const mongoose = require('mongoose');
-const setupTestDB = require('../../../utils/setupTestDB');
-const paginate = require('../../../../src/models/plugins/paginate.plugin');
+import mongoose, { Model, Document } from 'mongoose';
+import setupTestDB from '../../../utils/setupTestDB';
+import paginate, { PaginationOptions } from '../../../../src/models/plugins/paginate.plugin';
 
-const projectSchema = mongoose.Schema({
+interface ProjectFields {
+  name: string;
+}
+
+interface ProjectDocument extends Document, ProjectFields {
+  tasks?: Array<TaskDocument['_id']>;
+}
+
+interface ProjectModel extends Model<ProjectDocument> {
+  searchableFields(): Array<keyof ProjectFields>;
+}
+
+const projectSchema = new mongoose.Schema<ProjectDocument, ProjectModel>({
   name: {
     type: String,
     required: true,
@@ -21,9 +33,20 @@ projectSchema.statics.searchableFields = function () {
   return ['name'];
 };
 
-const Project = mongoose.model('Project', projectSchema);
+const Project = mongoose.model<ProjectDocument, ProjectModel>('Project', projectSchema);
 
-const taskSchema = mongoose.Schema({
+interface TaskFields {
+  name: string;
+  project: ProjectDocument['_id'];
+}
+
+interface TaskDocument extends Document, TaskFields {}
+
+interface TaskModel extends Model<TaskDocument> {
+  searchableFields(): Array<keyof TaskFields>;
+}
+
+const taskSchema = new mongoose.Schema<TaskDocument, TaskModel>({
   name: {
     type: String,
     required: true,
@@ -41,7 +64,7 @@ taskSchema.statics.searchableFields = function () {
   return ['name'];
 };
 
-const Task = mongoose.model('Task', taskSchema);
+const Task = mongoose.model<TaskDocument, TaskModel>('Task', taskSchema);
 
 setupTestDB();
 
@@ -69,3 +92,4 @@ describe('paginate plugin', () => {
     });
   });
 });
+
