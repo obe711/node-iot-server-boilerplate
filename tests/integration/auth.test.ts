@@ -480,6 +480,9 @@ describe('Auth middleware', () => {
   test('should call next with no errors if access token is valid', async () => {
     await insertUsers([userOne]);
     const req = httpMocks.createRequest({ headers: { Authorization: `Bearer ${userOneAccessToken}` } });
+    if(!req.user) {
+      throw new Error
+    }
     const next = jest.fn();
 
     await auth()(req, httpMocks.createResponse(), next);
@@ -603,7 +606,7 @@ describe('Auth middleware', () => {
     });
     const next = jest.fn();
 
-    await auth(...roleRights.get('admin'))(req, httpMocks.createResponse(), next);
+    await auth(...roleRights.get('admin') as string[])(req, httpMocks.createResponse(), next);
 
     expect(next).toHaveBeenCalledWith();
   });
