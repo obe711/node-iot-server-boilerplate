@@ -8,7 +8,7 @@ const deleteAtPath = (obj: Record<string, any>, path: string[], index: number): 
   deleteAtPath(obj[path[index]], path, index + 1);
 };
 
-const toJSON = (schema: Schema<Document>): void => {
+const toJSON = (schema: Schema): void => {
   let transform;
   if (schema.options.toJSON && schema.options.toJSON.transform) {
     transform = schema.options.toJSON.transform;

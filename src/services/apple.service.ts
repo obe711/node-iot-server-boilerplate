@@ -53,14 +53,11 @@ const verifyOAuthToken = async (token: string, firstName?: string, lastName?: st
   firstName = firstName || '';
   lastName = lastName || '';
   try {
-    const user  = await getAppleUserId(token) as ICreateAppleUser
+    const user  = await getAppleUserId(token) 
 
     logger.info(JSON.stringify({ id: 'apple data', user }, null, 2));
 
-  
-  
-
-    const foundUser = await userService.getUserByEmail(user.email);
+     const foundUser = await userService.getUserByEmail(user.email);
     if (!foundUser) {
       const newUser = await userService.createUser({
         firstName: !firstName ? 'n/a' : firstName,

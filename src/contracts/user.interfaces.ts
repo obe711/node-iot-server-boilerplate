@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 
-export interface IUser {
+export interface IUser  {
   firstName: string;
   lastName: string;
   email: string;
@@ -9,7 +9,7 @@ export interface IUser {
   authType: string;
   role: string;
   isEmailVerified?: boolean;
-_id: mongoose.Types.ObjectId;
+  _id: mongoose.Types.ObjectId;
 };
 
 export type User = {
