@@ -3,11 +3,10 @@ import httpStatus from 'http-status';
 import ApiError from '../utils/ApiError';
 import { roleRights } from '../config/roles';
 import { Request, Response, NextFunction } from 'express';
-import { UserRequest } from '../contracts/user.interfaces';
 
 type RequiredRights = string[];
 
-const verifyCallback = (requiredRights: RequiredRights) => (req: UserRequest, resolve: any, reject: any) => async (err: Error, user: any, info: any) => {
+const verifyCallback = (requiredRights: RequiredRights) => (req: Request, resolve: any, reject: any) => async (err: Error, user: any, info: any) => {
   if (err || info || !user) {
     return reject(new ApiError(httpStatus.UNAUTHORIZED, 'Please authenticate'));
   }

@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import httpStatus from 'http-status';
 import catchAsync from '../utils/catchAsync';
 import { config } from '../config/config';
-import { UserRequest } from '../contracts/user.interfaces';
 import {
   authService,
   userService,
@@ -69,13 +68,18 @@ const resetPassword = catchAsync(async (req: Request, res: Response) => {
 });
 
 const sendVerificationEmail = catchAsync(async (req: Request, res: Response) => {
+  if(!req.user) {
+    throw new Error
+  }
+
   const verifyEmailToken = await tokenService.generateVerifyEmailToken(req.user);
   await emailService.sendVerificationEmail(req.user.email, verifyEmailToken);
   res.status(httpStatus.NO_CONTENT).send();
 });
 
 const verifyEmail = catchAsync(async (req: Request, res: Response) => {
-  await authService.verifyEmail(req.query.token);
+
+  await authService.verifyEmail(req.query.token as string);
   res.status(httpStatus.NO_CONTENT).send();
 });
 

@@ -1062,7 +1062,7 @@
 
 "@types/openapi-to-postmanv2@^3.2.0":
   version "3.2.0"
-  resolved "https://registry.npmjs.org/@types/openapi-to-postmanv2/-/openapi-to-postmanv2-3.2.0.tgz"
+  resolved "https://registry.yarnpkg.com/@types/openapi-to-postmanv2/-/openapi-to-postmanv2-3.2.0.tgz#6aa923e39ad5db0dbec3163d4dc85ce5fffb5938"
   integrity sha512-oXe9T+tZxl5eRzJXB0R8gD+pAcvu0efsOFyCWO1FQiQRlZ/w/cW4HZ/6OkepsYLy8jysvGDex3NT72ojJpFCDw==
   dependencies:
     "@types/postman-collection" "*"

@@ -68,7 +68,7 @@ const verifyToken = async (token: string, type: string): Promise<IToken> => {
  * @param {User} user
  * @returns {Promise<Object>}
  */
-const generateAuthTokens = async (user: ICreateUser): Promise<{ access: { token: string, expires: Date }, refresh: { token: string, expires: Date } }> => {
+const generateAuthTokens = async (user: ICreateUser ): Promise<{ access: { token: string, expires: Date }, refresh: { token: string, expires: Date } }> => {
   const accessTokenExpires = moment().add(config.jwt.accessExpirationMinutes, 'minutes');
   const accessToken = generateToken(user._id.toString(), accessTokenExpires, tokenTypes.ACCESS);
 
@@ -108,10 +108,10 @@ const generateResetPasswordToken = async (email: string): Promise<string> => {
  * @param {User} user
  * @returns {Promise<string>}
  */
-const generateVerifyEmailToken = async (user: { id: string }): Promise<string> => {
+const generateVerifyEmailToken = async (user: ICreateUser): Promise<string> => {
   const expires = moment().add(config.jwt.verifyEmailExpirationMinutes, 'minutes');
-  const verifyEmailToken = generateToken(user.id, expires, tokenTypes.VERIFY_EMAIL);
-  await saveToken(verifyEmailToken, user.id, expires, tokenTypes.VERIFY_EMAIL);
+  const verifyEmailToken = generateToken(user._id.toString(), expires, tokenTypes.VERIFY_EMAIL);
+  await saveToken(verifyEmailToken, user._id.toString(), expires, tokenTypes.VERIFY_EMAIL);
   return verifyEmailToken;
 };
 

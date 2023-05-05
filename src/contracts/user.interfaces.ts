@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { Request } from 'express';
+
 
 export interface ICreateUser {
   firstName: string;
@@ -12,6 +12,18 @@ export interface ICreateUser {
 _id: mongoose.Types.ObjectId;
 };
 
+export type User = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password?: string;
+  authType: string;
+  role: string;
+  isEmailVerified?: boolean;
+_id: mongoose.Types.ObjectId;
+
+}
+
 
 export interface IUpdateUser {
   firstName?: string;
@@ -23,7 +35,3 @@ export interface IUpdateUser {
   isEmailVerified?: boolean;
 }
 
-export interface UserRequest extends Request {
-  user: object;
-
-}
