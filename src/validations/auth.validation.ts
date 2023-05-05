@@ -47,7 +47,7 @@ interface VerifyEmailQuery {
   token: string;
 }
 
-export const register = {
+const register = {
   body: Joi.object<RegisterBody>({
     email: Joi.string().required().email(),
     password: Joi.string().required().custom(password),
@@ -56,14 +56,14 @@ export const register = {
   }),
 };
 
-export const login = {
+ const login = {
   body: Joi.object<LoginBody>({
     email: Joi.string().required(),
     password: Joi.string().required(),
   }),
 };
 
-export const oauthLogin = {
+const oauthLogin = {
   params: Joi.object<OauthLoginParams>({
     oauth: Joi.string().valid('google', 'apple').required(),
   }),
@@ -74,25 +74,25 @@ export const oauthLogin = {
   }),
 };
 
-export const logout = {
+const logout = {
   body: Joi.object<LogoutBody>({
     refreshToken: Joi.string().required(),
   }),
 };
 
-export const refreshTokens = {
+const refreshTokens = {
   body: Joi.object<RefreshTokensBody>({
     refreshToken: Joi.string().required(),
   }),
 };
 
-export const forgotPassword = {
+const forgotPassword = {
   body: Joi.object<ForgotPasswordBody>({
     email: Joi.string().email().required(),
   }),
 };
 
-export const resetPassword = {
+const resetPassword = {
   query: Joi.object<ResetPasswordQuery>({
     token: Joi.string().required(),
   }),
@@ -101,8 +101,19 @@ export const resetPassword = {
   }),
 };
 
-export const verifyEmail = {
+const verifyEmail = {
   query: Joi.object<VerifyEmailQuery>({
     token: Joi.string().required(),
   }),
 };
+
+export {  
+  register,
+  login,
+  oauthLogin,
+  logout,
+  refreshTokens,
+  forgotPassword,
+  resetPassword,
+  verifyEmail 
+}

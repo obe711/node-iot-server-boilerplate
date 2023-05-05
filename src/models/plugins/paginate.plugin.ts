@@ -1,12 +1,26 @@
-import { Schema, Model } from "mongoose"
-
 /* eslint-disable no-param-reassign */
+import { Schema, Document, Model } from 'mongoose';
+
+export interface QueryResult {
+  results: Document[];
+  page: number;
+  limit: number;
+  totalPages: number;
+  totalResults: number;
+}
+
+export interface IOptions {
+  sortBy?: string;
+  projectBy?: string;
+  populate?: string;
+  limit?: number;
+  page?: number;
+}
 
 
 
 
-const paginate = (schema: Schema) => {
-  /**
+const paginate = <T extends Document, U extends Model<U>>(schema: Schema<T>): void => {  /**
    * @typedef {Object} QueryResult
    * @property {Document[]} results - Results found
    * @property {number} page - Current page
@@ -56,16 +70,17 @@ const paginate = (schema: Schema) => {
       .skip(skip)
       .limit(limit);
 
-    if (options.populate) {
-      options.populate.split(',').forEach((populateOption: string) => {
-        docsPromise = docsPromise.populate(
+      if (options.populate) {
+        options.populate.split(',').forEach((populateOption: any) => {
+          docsPromise = docsPromise.populate(
             populateOption
-            .split('.')
-            .reverse()
-            .reduce((a, b) => ({ path: b, populate: a }))
-        );
-      });
-    }
+              .split('.')
+              .reverse()
+              .reduce((a: string, b: string) => ({ path: b, populate: a }))
+          );
+        });
+      }
+  
 
     docsPromise = docsPromise.exec();
 
