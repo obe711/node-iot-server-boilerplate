@@ -1,8 +1,12 @@
 import Converter from 'openapi-to-postmanv2';
 import { Request, Response, NextFunction } from 'express';
 
-export const apiConverter = (openapiData: object) => (req: Request, res: Response, next: NextFunction) => {
-  Converter.convert({ type: 'json', data: openapiData }, {}, (err, conversionResult) => {
+interface OpenApi {
+  openapiData: object;
+}
+
+export const apiConverter = (openApi: OpenApi) => (req: Request, res: Response, next: NextFunction) => {
+  Converter.convert({ type: 'json', data: openApi }, {}, (err, conversionResult) => {
     if (!conversionResult.result) {
       next(conversionResult.reason);
     } else {

@@ -17,7 +17,7 @@ const setTokenCookie = (res: Response<object>, tokenData: TokenData): void => {
     httpOnly: true,
     expires: new Date(expires),
   };
-  res.cookie(config.jwt.refreshCookieName as string, token, cookieRefreshOptions);
+  res.cookie(config.jwt.refreshCookieName, token, cookieRefreshOptions);
 };
 
 /**
@@ -29,7 +29,7 @@ const expireTokenCookie = (res: Response<object>): void => {
     httpOnly: true,
     expires: new Date(Date.now() - 60 * 1000 * 60 * 24 * 31),
   };
-  res.cookie(config.jwt.refreshCookieName as string, 'x', expireCookieOptions);
+  res.cookie(config.jwt.refreshCookieName, 'x', expireCookieOptions);
 };
 
 export const cookieService = {

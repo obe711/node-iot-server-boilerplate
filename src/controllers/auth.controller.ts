@@ -71,7 +71,6 @@ const sendVerificationEmail = catchAsync(async (req: Request, res: Response) => 
   if(!req.user) {
     throw new Error
   }
-
   const verifyEmailToken = await tokenService.generateVerifyEmailToken(req.user);
   await emailService.sendVerificationEmail(req.user.email, verifyEmailToken);
   res.status(httpStatus.NO_CONTENT).send();

@@ -1,6 +1,11 @@
+import { Schema, Model } from "mongoose"
+
 /* eslint-disable no-param-reassign */
 
-const paginate = (schema) => {
+
+
+
+const paginate = (schema: Schema) => {
   /**
    * @typedef {Object} QueryResult
    * @property {Document[]} results - Results found
@@ -23,8 +28,8 @@ const paginate = (schema) => {
   schema.statics.paginate = async function (filter, options, search) {
     let sort = '';
     if (options.sortBy) {
-      const sortingCriteria = [];
-      options.sortBy.split(',').forEach((sortOption) => {
+      const sortingCriteria:string[] = [];
+      options.sortBy.split(',').forEach((sortOption:string) => {
         const [key, order] = sortOption.split(':');
         sortingCriteria.push((order === 'desc' ? '-' : '') + key);
       });
@@ -52,9 +57,9 @@ const paginate = (schema) => {
       .limit(limit);
 
     if (options.populate) {
-      options.populate.split(',').forEach((populateOption) => {
+      options.populate.split(',').forEach((populateOption: string) => {
         docsPromise = docsPromise.populate(
-          populateOption
+            populateOption
             .split('.')
             .reverse()
             .reduce((a, b) => ({ path: b, populate: a }))
@@ -79,4 +84,4 @@ const paginate = (schema) => {
   };
 };
 
-module.exports = paginate;
+export default paginate
