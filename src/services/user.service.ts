@@ -1,6 +1,7 @@
 import httpStatus from 'http-status';
 import mongoose from 'mongoose';
-import { IUser, IUpdateUser } from '../contracts/user.interfaces';
+import { IUser, UpdateUser, CreateUser, IUserDocument } from '../contracts/user.interfaces';
+import { IPaginateOptions, IQueryResult } from '../contracts/paginate.interfaces';
 import { User } from '../models';
 import ApiError from '../utils/ApiError';
 
@@ -9,8 +10,8 @@ import ApiError from '../utils/ApiError';
  * @param {Object} userBody
  * @returns {Promise<User>}
  */
-const createUser = async (userBody: IUser): Promise<any> => {
-  if (await User.isEmailTaken(userBody.email, userBody._id)) {
+const createUser = async (userBody: CreateUser): Promise<IUserDocument> => {
+  if (await User.isEmailTaken(userBody.email)) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
   }
   return User.create(userBody);
@@ -26,7 +27,7 @@ const createUser = async (userBody: IUser): Promise<any> => {
  * @param {string} search - Text string to search in search fields
  * @returns {Promise<QueryResult>}
  */
-const queryUsers = async (filter: object, options: object, search: string) => {
+const queryUsers = async (filter: Record<string, any>, options: IPaginateOptions, search: string): Promise<IQueryResult> => {
   const users = await User.paginate(filter, options, search);
   return users;
 };
@@ -36,7 +37,7 @@ const queryUsers = async (filter: object, options: object, search: string) => {
  * @param {ObjectId} id
  * @returns {Promise<User>}
  */
-const getUserById = async (id: mongoose.Types.ObjectId) => {
+const getUserById = async (id: mongoose.Types.ObjectId): Promise<IUserDocument | null> => {
   return User.findById(id);
 };
 
@@ -45,7 +46,7 @@ const getUserById = async (id: mongoose.Types.ObjectId) => {
  * @param {string} email
  * @returns {Promise<User>}
  */
-const getUserByEmail = async (email: string) => {
+const getUserByEmail = async (email: string) : Promise<IUser | null> => {
   return User.findOne({ email });
 };
 
@@ -55,7 +56,7 @@ const getUserByEmail = async (email: string) => {
  * @param {Object} updateBody
  * @returns {Promise<User>}
  */
-const updateUserById = async (userId: mongoose.Types.ObjectId, updateBody: IUpdateUser) => {
+const updateUserById = async (userId: mongoose.Types.ObjectId, updateBody: UpdateUser):Promise<IUserDocument| null> => {
   const user = await getUserById(userId);
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
@@ -73,7 +74,7 @@ const updateUserById = async (userId: mongoose.Types.ObjectId, updateBody: IUpda
  * @param {ObjectId} userId
  * @returns {Promise<User>}
  */
-const deleteUserById = async (userId: mongoose.Types.ObjectId) => {
+const deleteUserById = async (userId: mongoose.Types.ObjectId): Promise<IUserDocument | null> => {
   const user = await getUserById(userId);
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');

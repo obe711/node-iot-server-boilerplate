@@ -5,5 +5,11 @@ export interface IToken {
   user: mongoose.Schema.Types.ObjectId;
   type: string;
   expires: Date;
-  blacklisted?: boolean;
+  blacklisted: boolean;
+}
+
+
+export interface TokenData {
+  expires: Date;
+  token: string;
 }

@@ -1,10 +1,7 @@
 import { Response } from 'express';
 import { config } from '../config/config';
+import { TokenData } from '../contracts/token.interfaces';
 
-interface TokenData {
-    expires: Date;
-    token: string;
-}
 
 /**
  * Set Token Cookie

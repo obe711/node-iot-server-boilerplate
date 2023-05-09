@@ -7,7 +7,7 @@ import { Token } from '../models';
 import ApiError from '../utils/ApiError';
 import { tokenTypes } from '../config/tokens';
 import { IToken } from '../contracts/token.interfaces';
-import { ICreateUser } from '../contracts/user.interfaces';
+//import { ICreateUser } from '../contracts/user.interfaces';
 
 /**
  * Generate token

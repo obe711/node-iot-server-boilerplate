@@ -4,11 +4,7 @@ import {userService} from './user.service';
 import Token from '../models/token.model';
 import ApiError from '../utils/ApiError';
 import { tokenTypes } from '../config/tokens';
-import { IUser } from '../contracts/user.interfaces';
-
-
-
-
+import { IUserDocument } from '../contracts/user.interfaces';
 
 /**
  * Login with username and password
@@ -16,7 +12,7 @@ import { IUser } from '../contracts/user.interfaces';
  * @param {string} password
  * @returns {Promise<User>}
  */
-export const loginUserWithEmailAndPassword = async (email: string, password: string): Promise<IUser> => {
+export const loginUserWithEmailAndPassword = async (email: string, password: string): Promise<IUserDocument> => {
   const user = await userService.getUserByEmail(email);
   if (user && user.authType !== 'email') {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password');

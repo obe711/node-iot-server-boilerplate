@@ -6,10 +6,6 @@ import ApiError from '../utils/ApiError';
 import { userService } from './user.service';
 import logger from '../config/logger';
 import {config} from '../config/config';
-import { ICreateAppleUser } from '../contracts/apple.interfaces';
-
-
-
 
 const _getApplePublicKeys = async () => {
   return axios

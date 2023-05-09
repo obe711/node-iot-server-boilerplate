@@ -1,44 +1,13 @@
-import mongoose, { Model, Schema, model, Document } from 'mongoose';
+import mongoose, { Schema, model } from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
 import { toJSON, paginate } from './plugins';
 import { roles } from '../config/roles';
 import authTypes from '../config/authTypes';
+import { IUserDocument, IUserModel } from '../contracts/user.interfaces';
 
-interface IUser {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  authType: string;
-  role: string;
-  isEmailVerified: boolean;
 
-}
-
-// interface IUserMethods {
-//   isPasswordMatch(password: string): Promise<boolean>;
-// }
-
-interface IUserDocument extends IUser, Document {
-  isPasswordMatch(password: string): Promise<boolean>;
-}
-
-// interface IUserModel extends Model<IUser, {}, IUserMethods> {
-//   searchableFields(): string[];
-//   isEmailTaken(email: string, excludeUserId: mongoose.Types.ObjectId): Promise<boolean>;
-//   toJSON: (arg0: Schema) => Promise<any>;
-//   paginate: (filter: object, options: object, search?: string) => Promise<object>;
-// }
-
-interface IUserModel extends Model<IUserDocument> {
-  searchableFields(): string[];
-  isEmailTaken(email: string, excludeUserId: mongoose.Types.ObjectId): Promise<boolean>;
-  toJSON: (arg0: Schema) => Promise<any>;
-  paginate: (filter: object, options: object, search?: string) => Promise<object>;
-}
-
-const userSchema: Schema<IUserDocument> = new Schema(
+const userSchema = new Schema<IUserDocument, IUserModel>(
   {
     firstName: {
       type: String,
@@ -64,7 +33,6 @@ const userSchema: Schema<IUserDocument> = new Schema(
     },
     password: {
       type: String,
-      // required: true, TODO: do we need this?
       trim: true,
       minlength: 8,
       validate(value: string) {
@@ -130,13 +98,14 @@ userSchema.static(
  */
 
 userSchema.method('isPasswordMatch', async function isPasswordMatch(password: string): Promise<boolean> {
-  const user = this as IUser;
+  const user = this;
   return bcrypt.compare(password, user.password);
 });
 
 userSchema.pre('save', async function (next) {
-  if (this.isModified('password')) {
-    this.password = await bcrypt.hash(this.password, 8);
+  const user = this;
+  if (user.isModified('password')) {
+    user.password = await bcrypt.hash(user.password, 8);
   }
   next();
 });
