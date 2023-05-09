@@ -83,3 +83,5 @@ const paginate = <T extends Document, U extends Model<U>>(schema: Schema<T>): vo
 };
 
 export default paginate
+
+

@@ -1,7 +1,7 @@
 import httpStatus from 'http-status';
 import mongoose from 'mongoose';
 import { IUser, UpdateUser, CreateUser, IUserDocument } from '../contracts/user.interfaces';
-import { IPaginateOptions, IQueryResult } from '../contracts/paginate.interfaces';
+import { IPaginateOptions, IQueryResult, createEmptyQueryResult } from '../contracts/paginate.interfaces';
 import { User } from '../models';
 import ApiError from '../utils/ApiError';
 
@@ -29,7 +29,7 @@ const createUser = async (userBody: CreateUser): Promise<IUserDocument> => {
  */
 const queryUsers = async (filter: Record<string, any>, options: IPaginateOptions, search: string): Promise<IQueryResult> => {
   const users = await User.paginate(filter, options, search);
-  return users;
+  return users ;
 };
 
 /**
@@ -46,7 +46,7 @@ const getUserById = async (id: mongoose.Types.ObjectId): Promise<IUserDocument |
  * @param {string} email
  * @returns {Promise<User>}
  */
-const getUserByEmail = async (email: string) : Promise<IUser | null> => {
+const getUserByEmail = async (email: string) : Promise<IUserDocument | null> => {
   return User.findOne({ email });
 };
 

@@ -1,10 +1,11 @@
+import mongoose from 'mongoose';
 import httpStatus from 'http-status';
 import {tokenService} from './token.service';
 import {userService} from './user.service';
 import Token from '../models/token.model';
 import ApiError from '../utils/ApiError';
 import { tokenTypes } from '../config/tokens';
-import { IUserDocument } from '../contracts/user.interfaces';
+import { IUserDocument, IUserWithTokens } from '../contracts/user.interfaces';
 
 /**
  * Login with username and password
@@ -41,10 +42,10 @@ export const logout = async (refreshToken: string): Promise<void> => {
  * @param {string} refreshToken
  * @returns {Promise<Object>}
  */
-export const refreshAuth = async (refreshToken: string) => {
+export const refreshAuth = async (refreshToken: string):Promise<IUserWithTokens> => {
   try {
     const refreshTokenDoc = await tokenService.verifyToken(refreshToken, tokenTypes.REFRESH);
-    const user = await userService.getUserById(refreshTokenDoc.user.toString())
+    const user = await userService.getUserById(new mongoose.Types.ObjectId(refreshTokenDoc.user))
     if (!user) {
       throw new Error();
     }

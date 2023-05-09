@@ -15,3 +15,11 @@ export interface IQueryResult {
   totalPages: number;
   totalResults: number;
 }
+
+export const createEmptyQueryResult = (): IQueryResult => ({
+  results: [],
+  page: 0,
+  limit: 0,
+  totalPages: 0,
+  totalResults: 0,
+});
