@@ -56,7 +56,10 @@ const saveToken = async (token: string, userId: mongoose.Types.ObjectId, expires
  * @returns {Promise<Token>}
  */
 const verifyToken = async (token: string, type: string): Promise<ITokenDocument> => {
-  const payload = jwt.verify(token, config.jwt.secret) as { sub: string };
+  const payload = jwt.verify(token, config.jwt.secret);
+  if (typeof payload.sub !== 'string') {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'bad user');
+  }
   const tokenDoc = await Token.findOne({ token, type, user: payload.sub, blacklisted: false });
   if (!tokenDoc) {
     throw new Error('Token not found');

@@ -1,7 +1,7 @@
 import httpStatus from 'http-status';
 import mongoose from 'mongoose';
 import { IUser, UpdateUser, CreateUser, IUserDocument } from '../contracts/user.interfaces';
-import { IPaginateOptions, IQueryResult, createEmptyQueryResult } from '../contracts/paginate.interfaces';
+import { IPaginateOptions, IQueryResult } from '../contracts/paginate.interfaces';
 import { User } from '../models';
 import ApiError from '../utils/ApiError';
 
