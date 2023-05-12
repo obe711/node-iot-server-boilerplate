@@ -4,7 +4,7 @@ import ApiError from '../utils/ApiError';
 import {userService} from './user.service';
 import {config} from '../config/config';
 import logger from '../config/logger';
-import { IUser } from '../contracts/user.interfaces';
+import { IUserDocument } from '../contracts/user.interfaces';
 
 // Google Oauth2
 const client = new OAuth2Client(config.oauth.google.client_id);
@@ -12,7 +12,7 @@ const client = new OAuth2Client(config.oauth.google.client_id);
 /**
  * Verify Google Oauth2 token
  * @param {string} token
- * @returns {Promise<IUser>}
+ * @returns {Promise<IUserDocument>}
  */
 const verifyOAuthToken = async (token: string) => {
   try {
@@ -28,7 +28,7 @@ const verifyOAuthToken = async (token: string) => {
 
 
     logger.info(JSON.stringify({ id: 'google data', payload }, null, 2));
-    const user = await userService.getUserByEmail(payload.email) as IUser;
+    const user = await userService.getUserByEmail(payload.email) as IUserDocument;
     if (!user) {
       const newUser = await userService.createUser({
         firstName: !payload.given_name ? 'n/a' : payload.given_name,

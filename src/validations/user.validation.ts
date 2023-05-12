@@ -50,4 +50,4 @@ const deleteUser = {
 };
 
 
-export { createUser, deleteUser, getUser, updateUser } 
+export const userValidation = { createUser, getUsers, deleteUser, getUser, updateUser } 

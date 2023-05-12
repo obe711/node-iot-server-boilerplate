@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import mongoose from 'mongoose';
 import httpStatus from 'http-status';
 import pick from '../utils/pick';
 import { userService } from '../services/user.service';
@@ -20,7 +21,7 @@ const getUsers = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getUser = catchAsync(async (req: Request, res: Response) => {
-  const user = await userService.getUserById(req.params.userId);
+  const user = await userService.getUserById(new mongoose.Types.ObjectId(req.params['userId']));
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
@@ -28,12 +29,12 @@ const getUser = catchAsync(async (req: Request, res: Response) => {
 });
 
 const updateUser = catchAsync(async (req: Request, res: Response) => {
-  const user = await userService.updateUserById(req.params.userId, req.body);
+  const user = await userService.updateUserById(new mongoose.Types.ObjectId(req.params['userId']), req.body);
   res.send(user);
 });
 
 const deleteUser = catchAsync(async (req: Request, res: Response) => {
-  await userService.deleteUserById(req.params.userId);
+  await userService.deleteUserById(new mongoose.Types.ObjectId(req.params['userId']));
   res.status(httpStatus.NO_CONTENT).send();
 });
 

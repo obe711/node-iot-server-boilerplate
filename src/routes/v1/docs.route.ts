@@ -2,7 +2,7 @@ import express, { Router } from 'express';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import swaggerDefinition from '../../docs/swaggerDef';
-import {apiConverter} from '../../docs/postman';
+import apiConverter from '../../docs/postman';
 
 const router: Router = express.Router();
 

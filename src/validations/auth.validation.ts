@@ -107,7 +107,7 @@ const verifyEmail = {
   }),
 };
 
-export {  
+export const authValidation =  {  
   register,
   login,
   oauthLogin,

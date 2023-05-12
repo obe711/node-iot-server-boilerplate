@@ -1,4 +1,4 @@
-import { Schema, Document, Model } from 'mongoose';
+import { Document } from 'mongoose';
 
 
 export interface IPaginateOptions {
