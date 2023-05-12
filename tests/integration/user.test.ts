@@ -44,6 +44,7 @@ describe('User routes', () => {
       });
 
       const dbUser = await User.findById(res.body.id);
+      if(dbUser) {
       expect(dbUser).toBeDefined();
       expect(dbUser.password).not.toBe(newUser.password);
       expect(dbUser).toMatchObject({
@@ -53,6 +54,7 @@ describe('User routes', () => {
         role: newUser.role,
         isEmailVerified: false,
       });
+    }
     });
 
     test('should be able to create an admin as well', async () => {

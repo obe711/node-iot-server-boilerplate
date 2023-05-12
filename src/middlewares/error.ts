@@ -4,8 +4,9 @@ import {config} from '../config/config';
 import logger from '../config/logger';
 import ApiError from '../utils/ApiError';
 import { IErrorExtend } from '../contracts/error.interfaces';
+import { Request, Response, NextFunction } from 'express';
 
-const errorConverter = (err: IErrorExtend, req: any, res: any, next: any) => {
+const errorConverter = (err: IErrorExtend, req: Request, res: Response, next: NextFunction) => {
   let error = err;
   if (!(error instanceof ApiError)) {
     const statusCode =

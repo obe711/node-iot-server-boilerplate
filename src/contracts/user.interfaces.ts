@@ -11,6 +11,17 @@ export interface IUser  {
   isEmailVerified: boolean;
 };
 
+export interface IUserTest  {
+  _id: mongoose.Types.ObjectId,
+  firstName: string;
+  lastName: string;
+  email: string;
+  password?: string;
+  authType: string;
+  role: string;
+  isEmailVerified: boolean;
+};
+
 export interface IUserDocument extends IUser, Document {
   isPasswordMatch(password: string): Promise<boolean>;
 }

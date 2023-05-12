@@ -1,6 +1,7 @@
-import mongoose, { Model, Document } from 'mongoose';
+import mongoose, { Model, Document, Schema } from 'mongoose';
 import setupTestDB from '../../../utils/setupTestDB';
-import paginate, { PaginationOptions } from '../../../../src/models/plugins/paginate.plugin';
+import { IQueryResult } from '../../../../src/contracts/paginate.interfaces';
+import paginate from '../../../../src/models/plugins/paginate.plugin';
 
 interface ProjectFields {
   name: string;
@@ -12,7 +13,10 @@ interface ProjectDocument extends Document, ProjectFields {
 
 interface ProjectModel extends Model<ProjectDocument> {
   searchableFields(): Array<keyof ProjectFields>;
+  toJSON: (arg0: Schema) => Promise<any>;
+  paginate: (filter: Record<string, any>, options: Record<string, any>, search?: string) => Promise<IQueryResult>;
 }
+
 
 const projectSchema = new mongoose.Schema<ProjectDocument, ProjectModel>({
   name: {
@@ -44,6 +48,8 @@ interface TaskDocument extends Document, TaskFields {}
 
 interface TaskModel extends Model<TaskDocument> {
   searchableFields(): Array<keyof TaskFields>;
+  toJSON: (arg0: Schema) => Promise<any>;
+  paginate: (filter: Record<string, any>, options: Record<string, any>, search?: string) => Promise<IQueryResult>;
 }
 
 const taskSchema = new mongoose.Schema<TaskDocument, TaskModel>({
