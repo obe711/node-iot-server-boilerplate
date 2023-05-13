@@ -2,14 +2,21 @@ import Converter, { ConvertResult } from 'openapi-to-postmanv2';
 import { Request, Response, NextFunction } from 'express';
 
 interface OpenApi {
-  openapiData: object;
+  openapiData: string;
+}
+
+interface convertResult {
+  result: 'converted' | 'failed';
+  //output?: PostmanCollection;
+  reason?: string;
+  //errors?: ConversionError[];
 }
 
 const apiConverter = (openApi: OpenApi)  => (req: Request, res: Response, next: NextFunction) => {
   Converter.convert(
-    { type: 'string', data: openApi },
+    { type: 'string', data: openApi.openapiData },
     {},
-    (_err:Error, conversionResult: ConvertResult) => { 
+    (err:Error, conversionResult: convertResult) => { 
       if (!conversionResult.result) {
         next(conversionResult.reason);
       } else {
