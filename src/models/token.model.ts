@@ -11,7 +11,7 @@ const tokenSchema = new Schema<IToken>(
       index: true,
     },
     user: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: String,
       ref: 'User',
       required: true,
     },

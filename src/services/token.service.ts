@@ -55,7 +55,7 @@ const saveToken = async (token: string, userId: mongoose.Types.ObjectId, expires
  * @param {string} type
  * @returns {Promise<Token>}
  */
-const verifyToken = async (token: string, type: string): Promise<ITokenDocument> => {
+const verifyToken = async (token: string, type: string): Promise<IToken> => {
   const payload = jwt.verify(token, config.jwt.secret);
   if (typeof payload.sub !== 'string') {
     throw new ApiError(httpStatus.BAD_REQUEST, 'bad user');

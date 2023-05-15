@@ -6,6 +6,7 @@ import ApiError from '../utils/ApiError';
 import { userService } from './user.service';
 import logger from '../config/logger';
 import {config} from '../config/config';
+import { IUserDocument } from '../contracts/user.interfaces';
 
 const _getApplePublicKeys = async () => {
   return axios
@@ -49,7 +50,7 @@ const verifyOAuthToken = async (token: string, firstName?: string, lastName?: st
   firstName = firstName || '';
   lastName = lastName || '';
   try {
-    const user  = await getAppleUserId(token) 
+    const user  = await getAppleUserId(token) as IUserDocument
 
     logger.info(JSON.stringify({ id: 'apple data', user }, null, 2));
 
