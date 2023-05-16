@@ -256,7 +256,8 @@ describe('Auth routes', () => {
 
   describe('POST /v1/auth/forgot-password', () => {
     beforeEach(() => {
-      jest.spyOn(emailService.transport, 'sendMail').mockResolvedValue();
+      // jest.spyOn(emailService.transport, 'sendMail').mockResolvedValue();
+      jest.spyOn(emailService.transport, 'sendMail');
     });
 
     test('should return 204 and send reset password email to the user', async () => {
@@ -383,7 +384,8 @@ describe('Auth routes', () => {
 
   describe('POST /v1/auth/send-verification-email', () => {
     beforeEach(() => {
-      jest.spyOn(emailService.transport, 'sendMail').mockResolvedValue();
+      // jest.spyOn(emailService.transport, 'sendMail').mockResolvedValue();
+      jest.spyOn(emailService.transport, 'sendMail');
     });
 
     test('should return 204 and send verification email to the user', async () => {

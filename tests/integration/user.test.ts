@@ -8,11 +8,21 @@ import { User } from '../../src/models';
 import { userOne, userTwo, admin, insertUsers } from '../fixtures/user.fixture';
 import { userOneAccessToken, adminAccessToken } from '../fixtures/token.fixture';
 
+
 setupTestDB();
+
+
+interface IUserJest {
+  firstName: string,
+  lastName: string,
+  email: string,
+  password: string,
+  role: string
+}
 
 describe('User routes', () => {
   describe('POST /v1/users', () => {
-    let newUser;
+    let newUser: IUserJest;
 
     beforeEach(() => {
       newUser = {
@@ -498,6 +508,7 @@ describe('User routes', () => {
 
       const dbUser = await User.findById(userOne._id);
       expect(dbUser).toBeDefined();
+      if(dbUser) {
       expect(dbUser.password).not.toBe(updateBody.password);
       expect(dbUser).toMatchObject({
         firstName: updateBody.firstName,
@@ -505,6 +516,7 @@ describe('User routes', () => {
         email: updateBody.email,
         role: 'user',
       });
+    }
     });
 
     test('should return 401 error if access token is missing', async () => {

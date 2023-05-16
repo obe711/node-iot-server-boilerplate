@@ -11,7 +11,7 @@ describe('Auth routes', () => {
         .get('/v1/docs')
         .send()
         .expect(httpStatus.NOT_FOUND);
-      config.env = process.env.NODE_ENV;
+      //config.env = process.env.NODE_ENV;
     });
   });
   describe('GET /v1/docs/postman', () => {
@@ -21,7 +21,7 @@ describe('Auth routes', () => {
         .get('/v1/docs/postman')
         .send()
         .expect(httpStatus.NOT_FOUND);
-      config.env = process.env.NODE_ENV;
+      //config.env = process.env.NODE_ENV;
     });
   });
 });

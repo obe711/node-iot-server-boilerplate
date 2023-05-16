@@ -22,6 +22,7 @@ export interface IUserTest  {
   isEmailVerified: boolean;
 };
 
+
 export interface IUserDocument extends IUser, Document {
   isPasswordMatch(password: string): Promise<boolean>;
 }

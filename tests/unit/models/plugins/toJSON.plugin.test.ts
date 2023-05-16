@@ -1,109 +1,102 @@
-import mongoose, { Schema, Model, Document } from 'mongoose';
+import mongoose, { Model, Document } from 'mongoose';
+import { toJSON } from '../../../../src/models/plugins';
 
-interface IModel extends Document {}
+interface SampleSchema {
+  public: string;
+  private: string;
+  nested: {
+    private: string;
+  };
+}
 
-const toJSONPlugin = (schema: Schema) => {
-  schema.set('toJSON', {
-    transform: (doc, ret) => {
-      ret.id = ret._id.toString();
-      delete ret._id;
-      delete ret.__v;
-      Object.keys(schema.paths).forEach((path) => {
-        if (schema.paths[path].options.private) {
-          delete ret[path];
-        }
-      });
-    },
-  });
-};
+interface SampleSchemaDoc extends SampleSchema, Document {}
+interface SampleSchemaModel extends Model<SampleSchemaDoc> {}
 
 describe('toJSON plugin', () => {
   let connection: mongoose.Connection;
-  let Model: Model<IModel>;
 
   beforeEach(() => {
     connection = mongoose.createConnection();
-    const schema = new Schema({});
-    toJSONPlugin(schema);
-    Model = connection.model<IModel>('Model', schema);
   });
 
   it('should replace _id with id', () => {
-    const doc = new Model();
-    const json = doc.toJSON();
-    expect(json).not.toHaveProperty('_id');
-    expect(json).toHaveProperty('id', doc._id.toString());
+    const schema = new mongoose.Schema<SampleSchemaDoc, SampleSchemaModel>();
+    schema.plugin(toJSON);
+    const SampleModel = connection.model<SampleSchemaDoc, SampleSchemaModel>('Model', schema);
+    const doc = new SampleModel();
+    expect(doc.toJSON()).not.toHaveProperty('_id');
+    expect(doc.toJSON()).toHaveProperty('id', doc._id.toString());
   });
 
   it('should remove __v', () => {
-    const doc = new Model();
-    const json = doc.toJSON();
-    expect(json).not.toHaveProperty('__v');
+    const schema = new mongoose.Schema<SampleSchemaDoc, SampleSchemaModel>();
+    schema.plugin(toJSON);
+    const SampleModel = connection.model<SampleSchemaDoc, SampleSchemaModel>('Model', schema);
+    const doc = new SampleModel();
+    expect(doc.toJSON()).not.toHaveProperty('__v');
   });
 
   it('should remove createdAt and updatedAt', () => {
-    const schema = new Schema({}, { timestamps: true });
-    toJSONPlugin(schema);
-    const Model = connection.model<IModel>('Model', schema);
-    const doc = new Model();
-    const json = doc.toJSON();
-    expect(json).not.toHaveProperty('createdAt');
-    expect(json).not.toHaveProperty('updatedAt');
+    const schema = new mongoose.Schema<SampleSchemaDoc, SampleSchemaModel>({}, { timestamps: true });
+    schema.plugin(toJSON);
+    const SampleModel = connection.model<SampleSchemaDoc, SampleSchemaModel>('Model', schema);
+    const doc = new SampleModel();
+    expect(doc.toJSON()).not.toHaveProperty('createdAt');
+    expect(doc.toJSON()).not.toHaveProperty('updatedAt');
   });
 
   it('should remove any path set as private', () => {
-    const schema = new Schema({
+    const schema = new mongoose.Schema<SampleSchemaDoc, SampleSchemaModel>({
       public: { type: String },
       private: { type: String, private: true },
     });
-    toJSONPlugin(schema);
-    const Model = connection.model<IModel>('Model', schema);
-    const doc = new Model({ public: 'some public value', private: 'some private value' });
-    const json = doc.toJSON();
-    expect(json).not.toHaveProperty('private');
-    expect(json).toHaveProperty('public');
+    schema.plugin(toJSON);
+    const SampleModel = connection.model<SampleSchemaDoc, SampleSchemaModel>('Model', schema);
+    const doc = new SampleModel({ public: 'some public value', private: 'some private value' });
+    expect(doc.toJSON()).not.toHaveProperty('private');
+    expect(doc.toJSON()).toHaveProperty('public');
   });
 
   it('should remove any nested paths set as private', () => {
-    const schema = new Schema({
+    const schema = new mongoose.Schema<SampleSchemaDoc, SampleSchemaModel>({
       public: { type: String },
       nested: {
         private: { type: String, private: true },
       },
     });
-    toJSONPlugin(schema);
-    const Model = connection.model<IModel>('Model', schema);
-    const doc = new Model({
+    schema.plugin(toJSON);
+    const SampleModel = connection.model<SampleSchemaDoc, SampleSchemaModel>('Model', schema);
+    const doc = new SampleModel({
       public: 'some public value',
       nested: {
         private: 'some nested private value',
       },
     });
-    const json = doc.toJSON();
-    expect(json).not.toHaveProperty('nested.private');
-    expect(json).toHaveProperty('public');
+    expect(doc.toJSON()).not.toHaveProperty('nested.private');
+    expect(doc.toJSON()).toHaveProperty('public');
   });
 
   it('should also call the schema toJSON transform function', () => {
-    const schema = new Schema(
+    const schema = new mongoose.Schema<SampleSchemaDoc, SampleSchemaModel>(
       {
         public: { type: String },
         private: { type: String },
       },
       {
         toJSON: {
-          transform: (doc, ret) => {
+          transform: (_doc, ret) => {
+            // eslint-disable-next-line no-param-reassign
             delete ret.private;
           },
         },
       }
     );
-    toJSONPlugin(schema);
-    const Model = connection.model<IModel>('Model', schema);
-    const doc = new Model({ public: 'some public value', private: 'some private value' });
-    const json = doc.toJSON();
-    expect(json).not.toHaveProperty('private');
-    expect(json).toHaveProperty('public');
+    schema.plugin(toJSON);
+    const SampleModel = connection.model<SampleSchemaDoc, SampleSchemaModel>('Model', schema);
+    const doc = new SampleModel({ public: 'some public value', private: 'some private value' });
+    expect(doc.toJSON()).not.toHaveProperty('private');
+    expect(doc.toJSON()).toHaveProperty('public');
   });
 });
+
 

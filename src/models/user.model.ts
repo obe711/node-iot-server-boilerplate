@@ -1,4 +1,4 @@
-import mongoose, { Schema, model } from 'mongoose';
+import mongoose, { Schema, model, Model } from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
 import { toJSON, paginate } from './plugins';
