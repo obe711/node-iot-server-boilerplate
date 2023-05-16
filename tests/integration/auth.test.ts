@@ -16,6 +16,7 @@ import { roleRights } from '../../src/config/roles';
 import { tokenTypes } from '../../src/config/tokens';
 import { userOne, admin, insertUsers } from '../fixtures/user.fixture';
 import { userOneAccessToken, adminAccessToken } from '../fixtures/token.fixture';
+import { IUserDocument } from '../../src/contracts/user.interfaces';
 
 
 setupTestDB();
