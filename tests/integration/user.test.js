@@ -1,28 +1,17 @@
-
-import request from 'supertest';
-import faker from 'faker';
-import httpStatus from 'http-status';
-import app from '../../src/app';
-import setupTestDB  from '../utils/setupTestDB';
-import { User } from '../../src/models';
-import { userOne, userTwo, admin, insertUsers } from '../fixtures/user.fixture';
-import { userOneAccessToken, adminAccessToken } from '../fixtures/token.fixture';
-
+const request = require('supertest');
+const faker = require('faker');
+const httpStatus = require('http-status');
+const app = require('../../src/app');
+const setupTestDB = require('../utils/setupTestDB');
+const { User } = require('../../src/models');
+const { userOne, userTwo, admin, insertUsers } = require('../fixtures/user.fixture');
+const { userOneAccessToken, adminAccessToken } = require('../fixtures/token.fixture');
 
 setupTestDB();
 
-
-interface IUserJest {
-  firstName: string,
-  lastName: string,
-  email: string,
-  password: string,
-  role: string
-}
-
 describe('User routes', () => {
   describe('POST /v1/users', () => {
-    let newUser: IUserJest;
+    let newUser;
 
     beforeEach(() => {
       newUser = {
@@ -54,7 +43,6 @@ describe('User routes', () => {
       });
 
       const dbUser = await User.findById(res.body.id);
-      if(dbUser) {
       expect(dbUser).toBeDefined();
       expect(dbUser.password).not.toBe(newUser.password);
       expect(dbUser).toMatchObject({
@@ -64,7 +52,6 @@ describe('User routes', () => {
         role: newUser.role,
         isEmailVerified: false,
       });
-    }
     });
 
     test('should be able to create an admin as well', async () => {
@@ -80,7 +67,7 @@ describe('User routes', () => {
       expect(res.body.role).toBe('admin');
 
       const dbUser = await User.findById(res.body.id);
-      expect(dbUser?.role).toBe('admin');
+      expect(dbUser.role).toBe('admin');
     });
 
     test('should return 401 error if access token is missing', async () => {
@@ -508,7 +495,6 @@ describe('User routes', () => {
 
       const dbUser = await User.findById(userOne._id);
       expect(dbUser).toBeDefined();
-      if(dbUser) {
       expect(dbUser.password).not.toBe(updateBody.password);
       expect(dbUser).toMatchObject({
         firstName: updateBody.firstName,
@@ -516,7 +502,6 @@ describe('User routes', () => {
         email: updateBody.email,
         role: 'user',
       });
-    }
     });
 
     test('should return 401 error if access token is missing', async () => {

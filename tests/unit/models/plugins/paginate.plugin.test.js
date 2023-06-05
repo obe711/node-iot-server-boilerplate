@@ -1,24 +1,8 @@
-import mongoose, { Model, Document, Schema } from 'mongoose';
-import setupTestDB from '../../../utils/setupTestDB';
-import { IQueryResult } from '../../../../src/contracts/paginate.interfaces';
-import paginate from '../../../../src/models/plugins/paginate.plugin';
+const mongoose = require('mongoose');
+const setupTestDB = require('../../../utils/setupTestDB');
+const paginate = require('../../../../src/models/plugins/paginate.plugin');
 
-interface ProjectFields {
-  name: string;
-}
-
-interface ProjectDocument extends Document, ProjectFields {
-  tasks?: Array<TaskDocument['_id']>;
-}
-
-interface ProjectModel extends Model<ProjectDocument> {
-  searchableFields(): Array<keyof ProjectFields>;
-  toJSON: (arg0: Schema) => Promise<any>;
-  paginate: (filter: Record<string, any>, options: Record<string, any>, search?: string) => Promise<IQueryResult>;
-}
-
-
-const projectSchema = new mongoose.Schema<ProjectDocument, ProjectModel>({
+const projectSchema = mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -37,22 +21,9 @@ projectSchema.statics.searchableFields = function () {
   return ['name'];
 };
 
-const Project = mongoose.model<ProjectDocument, ProjectModel>('Project', projectSchema);
+const Project = mongoose.model('Project', projectSchema);
 
-interface TaskFields {
-  name: string;
-  project: ProjectDocument['_id'];
-}
-
-interface TaskDocument extends Document, TaskFields {}
-
-interface TaskModel extends Model<TaskDocument> {
-  searchableFields(): Array<keyof TaskFields>;
-  toJSON: (arg0: Schema) => Promise<any>;
-  paginate: (filter: Record<string, any>, options: Record<string, any>, search?: string) => Promise<IQueryResult>;
-}
-
-const taskSchema = new mongoose.Schema<TaskDocument, TaskModel>({
+const taskSchema = mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -70,7 +41,7 @@ taskSchema.statics.searchableFields = function () {
   return ['name'];
 };
 
-const Task = mongoose.model<TaskDocument, TaskModel>('Task', taskSchema);
+const Task = mongoose.model('Task', taskSchema);
 
 setupTestDB();
 
@@ -98,4 +69,3 @@ describe('paginate plugin', () => {
     });
   });
 });
-
