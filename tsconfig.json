@@ -106,7 +106,7 @@
   "resolveJsonModule": true,                 /* Include modules imported with '.json' extension */
   "esModuleInterop": true,
   "include": [
-    "./src/**/*"
+    "./src/**/*.ts"
   ],
   "exclude": [
     "./node_modules",
