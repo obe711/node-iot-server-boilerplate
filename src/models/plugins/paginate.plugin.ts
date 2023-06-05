@@ -40,6 +40,7 @@ const paginate = <T extends Document, U extends Model<U>>(schema: Schema<T>): vo
     const skip = (page - 1) * limit;
 
     // Global Search
+    //@ts-ignore
     const searchFilter = [...this.searchableFields()].map((field) => {
       return {
         [field]: { $regex: search, $options: 'i' },
